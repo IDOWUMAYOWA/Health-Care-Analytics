@@ -1,1 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian Health — Financial &amp; Provider Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2F5F6;
+  --surface:#FFFFFF;
+  --ink:#132029;
+  --ink-2:#4A5C68;
+  --ink-3:#8496A1;
+  --rule:#DCE4E8;
+  --teal:#0F6E7A;
+  --teal-2:#3F97A0;
+  --teal-3:#9AC4C8;
+  --amber:#B5651D;
+  --amber-soft:#E8C9A8;
+  --green:#3B7A5A;
+  --red:#9E3B34;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Inter,system-ui,sans-serif;
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:"Bricolage Grotesque",Inter,sans-serif;margin:0;letter-spacing:-0.02em}
+.num{font-variant-numeric:tabular-nums}
+
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px 72px}
+
+/* masthead */
+.masthead{padding:36px 0 20px;border-bottom:2px solid var(--ink)}
+.masthead h1{font-size:30px;font-weight:800;line-height:1.1}
+.masthead .meta{color:var(--ink-2);margin-top:6px;font-size:13px}
+
+/* tabs */
+nav{display:flex;gap:0;border-bottom:1px solid var(--rule);margin-bottom:32px;overflow-x:auto}
+nav button{
+  appearance:none;background:none;border:none;cursor:pointer;
+  font-family:inherit;font-size:14px;font-weight:500;color:var(--ink-2);
+  padding:14px 20px;border-bottom:2px solid transparent;margin-bottom:-1px;
+  white-space:nowrap;transition:color .15s;
+}
+nav button:hover{color:var(--ink)}
+nav button[aria-selected="true"]{color:var(--teal);border-bottom-color:var(--teal);font-weight:600}
+nav button:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+
+/* vitals strip */
+.vitals{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin:28px 0 40px;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.vital{padding:20px 22px 18px;border-right:1px solid var(--rule)}
+.vital:last-child{border-right:none}
+.vital .v{font-family:"Bricolage Grotesque";font-size:27px;font-weight:600;line-height:1.05;letter-spacing:-0.03em}
+.vital .k{color:var(--ink-3);font-size:11.5px;margin-top:7px}
+.vital .sub{color:var(--ink-2);font-size:11.5px;margin-top:3px}
+.vital.flag .v{color:var(--amber)}
+
+section{display:none}
+section.on{display:block}
+
+.grid{display:grid;gap:24px}
+.g-2{grid-template-columns:1.55fr 1fr}
+.g-2e{grid-template-columns:1fr 1fr}
+.g-3{grid-template-columns:repeat(3,1fr)}
+
+.panel{background:var(--surface);border:1px solid var(--rule);padding:22px 24px 24px}
+.panel h3{font-size:15px;font-weight:600;margin-bottom:2px}
+.panel .note{color:var(--ink-3);font-size:12px;margin-bottom:18px}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:500;color:var(--ink-3);font-size:11.5px;
+   padding:0 10px 9px 0;border-bottom:1px solid var(--rule)}
+td{padding:11px 10px 11px 0;border-bottom:1px solid var(--rule)}
+tr:last-child td{border-bottom:none}
+td.r,th.r{text-align:right;padding-right:0}
+
+.bar-row{display:grid;grid-template-columns:112px 1fr 74px;align-items:center;gap:12px;margin-bottom:11px}
+.bar-row .lab{font-size:12.5px;color:var(--ink-2)}
+.bar-track{height:16px;background:#E8EEF0}
+.bar-fill{height:100%;background:var(--teal)}
+.bar-row .val{text-align:right;font-size:12.5px}
+
+.prov{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;
+  padding:18px 0;border-bottom:1px solid var(--rule)}
+.prov:last-child{border-bottom:none}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--teal-3);
+  display:grid;place-items:center;font-weight:600;color:#0B4A52;font-size:15px;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.prov .nm{font-weight:600;font-size:14.5px}
+.prov .sm{color:var(--ink-3);font-size:12px;margin-top:1px}
+.pstats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}
+.pstats div span{display:block;color:var(--ink-3);font-size:11px}
+.pstats div b{font-weight:600;font-size:14px}
+
+.callout{border-left:3px solid var(--amber);background:#FBF6F0;padding:16px 18px;margin-bottom:18px}
+.callout b{display:block;margin-bottom:4px;font-size:13.5px}
+.callout p{margin:0;color:var(--ink-2);font-size:13px}
+
+.finding{padding:16px 0;border-bottom:1px solid var(--rule)}
+.finding:last-child{border-bottom:none}
+.finding b{font-size:13.5px}
+.finding p{margin:5px 0 0;color:var(--ink-2);font-size:13px;max-width:74ch}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border:1px solid var(--rule);
+  color:var(--ink-2);margin-left:8px;vertical-align:middle}
+.tag.hi{border-color:var(--amber);color:var(--amber)}
+
+svg{display:block;width:100%;height:auto}
+.axis{font-size:10.5px;fill:var(--ink-3)}
+.gl{stroke:var(--rule);stroke-width:1}
+
+.legend{display:flex;gap:18px;margin-top:14px;font-size:12px;color:var(--ink-2)}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:middle}
+
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--rule);
+  color:var(--ink-3);font-size:12px}
+
+@media (max-width:1000px){
+  .vitals{grid-template-columns:repeat(3,1fr)}
+  .vital:nth-child(3n){border-right:none}
+  .vital:nth-child(-n+3){border-bottom:1px solid var(--rule)}
+  .g-2,.g-2e,.g-3{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  .wrap{padding:0 16px 48px}
+  .vitals{grid-template-columns:repeat(2,1fr)}
+  .vital:nth-child(2n){border-right:none}
+  .pstats{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <h1>Meridian Health — Financial &amp; Provider Performance</h1>
+  <div class="meta">5,000 visits · 01 Jan 2024 to 14 May 2025 · 5 providers · 5 departments</div>
+</header>
+
+<nav role="tablist">
+  <button role="tab" aria-selected="true" data-p="fin">Financial overview</button>
+  <button role="tab" aria-selected="false" data-p="prov">Provider insights</button>
+  <button role="tab" aria-selected="false" data-p="trend">Trends</button>
+  <button role="tab" aria-selected="false" data-p="dq">Data quality</button>
+</nav>
+
+<div class="vitals">
+  <div class="vital"><div class="v num">$3.36M</div><div class="k">Gross revenue</div><div class="sub num">$671 per visit</div></div>
+  <div class="vital"><div class="v num">5,000</div><div class="k">Visits</div><div class="sub num">4,973 unique patients</div></div>
+  <div class="vital"><div class="v num">66.3%</div><div class="k">Insurance covered</div><div class="sub num">$2.23M of billings</div></div>
+  <div class="vital flag"><div class="v num">$1.31M</div><div class="k">Outstanding</div><div class="sub num">38.3% of visits unpaid</div></div>
+  <div class="vital"><div class="v num">4.9</div><div class="k">Avg length of stay</div><div class="sub">days, admitted patients</div></div>
+  <div class="vital"><div class="v num">3.84</div><div class="k">Avg satisfaction</div><div class="sub">out of 10</div></div>
+</div>
+
+<section id="fin" class="on">
+  <div class="grid g-2" style="margin-bottom:24px">
+    <div class="panel">
+      <h3>Revenue by department</h3>
+      <p class="note">Treatment, medication and room charges combined</p>
+      <div class="bar-row"><div class="lab">Cardiology</div><div class="bar-track"><div class="bar-fill" style="width:100.0%"></div></div><div class="val num">$847K</div></div><div class="bar-row"><div class="lab">Orthopedics</div><div class="bar-track"><div class="bar-fill" style="width:96.0%"></div></div><div class="val num">$813K</div></div><div class="bar-row"><div class="lab">General Surgery</div><div class="bar-track"><div class="bar-fill" style="width:92.5%"></div></div><div class="val num">$783K</div></div><div class="bar-row"><div class="lab">Neurology</div><div class="bar-track"><div class="bar-fill" style="width:56.5%"></div></div><div class="val num">$478K</div></div><div class="bar-row"><div class="lab">Pediatrics</div><div class="bar-track"><div class="bar-fill" style="width:51.3%"></div></div><div class="val num">$434K</div></div>
+    </div>
+    <div class="panel">
+      <h3>What makes up a bill</h3>
+      <p class="note">Share of total gross revenue</p>
+      <svg viewBox="0 0 100 26" preserveAspectRatio="none" style="height:26px" role="img" aria-label="Revenue composition"><rect x="0" y="0" width="78.37744984840923" height="26" fill="var(--teal)"/><rect x="78.37744984840923" y="0" width="5.352383364495728" height="26" fill="var(--teal-2)"/><rect x="83.72983321290495" y="0" width="16.270166787095043" height="26" fill="var(--teal-3)"/></svg>
+      <div class="legend"><span><i style="background:var(--teal)"></i>Treatment 78.4%</span><span><i style="background:var(--teal-2)"></i>Room charges 5.4%</span><span><i style="background:var(--teal-3)"></i>Medication 16.3%</span></div>
+      <p style="color:var(--ink-2);font-size:13px;margin-top:20px;max-width:46ch">
+        Treatment fees dominate. Room charges contribute only where a patient was admitted,
+        which applies to 1,232 of 5,000 visits.</p>
+    </div>
+  </div>
+
+  <div class="grid g-2e">
+    <div class="panel">
+      <h3>Service type</h3>
+      <p class="note">Volume and value by category</p>
+      <table><thead><tr><th>Type</th><th class="r">Visits</th><th class="r">Revenue</th><th class="r">Avg</th></tr></thead>
+      <tbody><tr><td>Outpatient</td><td class="r num">2,520</td><td class="r num">$1.66M</td><td class="r num">$660</td></tr><tr><td>Inpatient</td><td class="r num">1,245</td><td class="r num">$856K</td><td class="r num">$687</td></tr><tr><td>Emergency</td><td class="r num">1,235</td><td class="r num">$837K</td><td class="r num">$678</td></tr></tbody></table>
+    </div>
+    <div class="panel">
+      <h3>Payer mix</h3>
+      <p class="note">Revenue by insurance provider</p>
+      <table><thead><tr><th>Provider</th><th class="r">Visits</th><th class="r">Revenue</th></tr></thead>
+      <tbody><tr><td>Aviva</td><td class="r num">1,669</td><td class="r num">$1.13M</td></tr><tr><td>AXA</td><td class="r num">1,692</td><td class="r num">$1.12M</td></tr><tr><td>Allianz</td><td class="r num">1,639</td><td class="r num">$1.11M</td></tr></tbody></table>
+      <p style="color:var(--ink-2);font-size:13px;margin-top:16px;max-width:46ch">
+        Revenue is split almost evenly across the three payers, so no single
+        contract renegotiation would move the total materially.</p>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:24px">
+    <h3>Department detail</h3>
+    <p class="note">Ranked by revenue, with unpaid rate</p>
+    <table><thead><tr><th>Department</th><th class="r">Visits</th><th class="r">Revenue</th><th class="r">Avg per visit</th><th class="r">Unpaid</th></tr></thead>
+    <tbody><tr><td>Cardiology</td><td class="r num">1,281</td><td class="r num">$847K</td><td class="r num">$661</td><td class="r num">41.1%</td></tr><tr><td>Orthopedics</td><td class="r num">1,179</td><td class="r num">$813K</td><td class="r num">$690</td><td class="r num">34.7%</td></tr><tr><td>General Surgery</td><td class="r num">1,185</td><td class="r num">$783K</td><td class="r num">$661</td><td class="r num">38.1%</td></tr><tr><td>Neurology</td><td class="r num">697</td><td class="r num">$478K</td><td class="r num">$686</td><td class="r num">41.2%</td></tr><tr><td>Pediatrics</td><td class="r num">658</td><td class="r num">$434K</td><td class="r num">$660</td><td class="r num">36.6%</td></tr></tbody></table>
+  </div>
+</section>
+
+<section id="prov">
+  <div class="callout">
+    <b>Workload is distributed 4.2 to 1</b>
+    <p>Dr. Sade Kikiola handled 1,875 visits against Dr. Johnson Grek's 445. The two lowest-volume
+    providers also record the highest satisfaction, so the imbalance may be costing patient experience
+    at the busy end rather than reflecting capacity.</p>
+  </div>
+
+  <div class="grid g-2" style="margin-bottom:24px">
+    <div class="panel">
+      <h3>Provider profiles</h3>
+      <p class="note">Ranked by revenue contribution</p>
+      <div class="prov">
+      <div class="avatar"><img src="https://i.imgur.com/3sep9QD.png" alt="" onerror="this.replaceWith(document.createTextNode('SK'))"></div>
+      <div>
+        <div class="nm">Dr. Sade Kikiola</div>
+        <div class="sm">Nigerian · Female · age 35</div>
+        <div class="pstats">
+          <div><span>Visits</span><b class="num">1,875</b></div>
+          <div><span>Revenue</span><b class="num">$1.21M</b></div>
+          <div><span>Avg per visit</span><b class="num">$646</b></div>
+          <div><span>Satisfaction</span><b class="num">2.35</b></div>
+          <div><span>Unpaid</span><b class="num">34.3%</b></div>
+        </div>
+      </div>
+    </div><div class="prov">
+      <div class="avatar"><img src="https://i.imgur.com/eG4Tcam.png" alt="" onerror="this.replaceWith(document.createTextNode('OA'))"></div>
+      <div>
+        <div class="nm">Dr. Olu Abisola</div>
+        <div class="sm">Nigerian · Male · age 37</div>
+        <div class="pstats">
+          <div><span>Visits</span><b class="num">1,358</b></div>
+          <div><span>Revenue</span><b class="num">$942K</b></div>
+          <div><span>Avg per visit</span><b class="num">$693</b></div>
+          <div><span>Satisfaction</span><b class="num">5.45</b></div>
+          <div><span>Unpaid</span><b class="num">46.5%</b></div>
+        </div>
+      </div>
+    </div><div class="prov">
+      <div class="avatar"><img src="https://i.imgur.com/0cmrpb3.png" alt="" onerror="this.replaceWith(document.createTextNode('RP'))"></div>
+      <div>
+        <div class="nm">Dr. Ravi Patel</div>
+        <div class="sm">Indian · Male · age 45</div>
+        <div class="pstats">
+          <div><span>Visits</span><b class="num">855</b></div>
+          <div><span>Revenue</span><b class="num">$571K</b></div>
+          <div><span>Avg per visit</span><b class="num">$668</b></div>
+          <div><span>Satisfaction</span><b class="num">3.36</b></div>
+          <div><span>Unpaid</span><b class="num">33.5%</b></div>
+        </div>
+      </div>
+    </div><div class="prov">
+      <div class="avatar"><img src="https://i.imgur.com/hgIjY62.png" alt="" onerror="this.replaceWith(document.createTextNode('EJ'))"></div>
+      <div>
+        <div class="nm">Dr. Emma Jones</div>
+        <div class="sm">European · Female · age 34</div>
+        <div class="pstats">
+          <div><span>Visits</span><b class="num">467</b></div>
+          <div><span>Revenue</span><b class="num">$325K</b></div>
+          <div><span>Avg per visit</span><b class="num">$696</b></div>
+          <div><span>Satisfaction</span><b class="num">4.85</b></div>
+          <div><span>Unpaid</span><b class="num">40.0%</b></div>
+        </div>
+      </div>
+    </div><div class="prov">
+      <div class="avatar"><img src="https://i.imgur.com/HWj2RL5.png" alt="" onerror="this.replaceWith(document.createTextNode('JG'))"></div>
+      <div>
+        <div class="nm">Dr. Johnson Grek</div>
+        <div class="sm">European · Male · age 50</div>
+        <div class="pstats">
+          <div><span>Visits</span><b class="num">445</b></div>
+          <div><span>Revenue</span><b class="num">$306K</b></div>
+          <div><span>Avg per visit</span><b class="num">$688</b></div>
+          <div><span>Satisfaction</span><b class="num">5.05</b></div>
+          <div><span>Unpaid</span><b class="num">37.8%</b></div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="panel">
+      <h3>Volume against satisfaction</h3>
+      <p class="note">Each point is one provider</p>
+      <svg viewBox="0 0 460 320" role="img" aria-label="Scatter plot of provider visit volume against average satisfaction score">
+        <line x1="46" y1="276.0" x2="434" y2="276.0" class="gl"/><text x="38" y="280.0" text-anchor="end" class="axis">0</text><line x1="46" y1="233.0" x2="434" y2="233.0" class="gl"/><text x="38" y="237.0" text-anchor="end" class="axis">1</text><line x1="46" y1="190.0" x2="434" y2="190.0" class="gl"/><text x="38" y="194.0" text-anchor="end" class="axis">2</text><line x1="46" y1="147.0" x2="434" y2="147.0" class="gl"/><text x="38" y="151.0" text-anchor="end" class="axis">3</text><line x1="46" y1="104.0" x2="434" y2="104.0" class="gl"/><text x="38" y="108.0" text-anchor="end" class="axis">4</text><line x1="46" y1="61.0" x2="434" y2="61.0" class="gl"/><text x="38" y="65.0" text-anchor="end" class="axis">5</text><line x1="46" y1="18.0" x2="434" y2="18.0" class="gl"/><text x="38" y="22.0" text-anchor="end" class="axis">6</text><text x="46.0" y="294" text-anchor="middle" class="axis">0</text><text x="143.0" y="294" text-anchor="middle" class="axis">500</text><text x="240.0" y="294" text-anchor="middle" class="axis">1,000</text><text x="337.0" y="294" text-anchor="middle" class="axis">1,500</text><text x="434.0" y="294" text-anchor="middle" class="axis">2,000</text><circle cx="409.8" cy="174.8" r="6" fill="var(--teal)" opacity="0.9"/><text x="399.8" y="178.8" text-anchor="end" class="axis" fill="var(--ink-2)">Sade Kikiola</text><circle cx="309.5" cy="41.7" r="6" fill="var(--teal)" opacity="0.9"/><text x="299.5" y="45.7" text-anchor="end" class="axis" fill="var(--ink-2)">Olu Abisola</text><circle cx="211.9" cy="131.3" r="6" fill="var(--teal)" opacity="0.9"/><text x="221.9" y="135.3" text-anchor="start" class="axis" fill="var(--ink-2)">Ravi Patel</text><circle cx="136.6" cy="67.4" r="6" fill="var(--teal)" opacity="0.9"/><text x="146.6" y="71.4" text-anchor="start" class="axis" fill="var(--ink-2)">Emma Jones</text><circle cx="132.3" cy="59.0" r="6" fill="var(--teal)" opacity="0.9"/><text x="142.3" y="85.4" text-anchor="start" class="axis" fill="var(--ink-2)">Johnson Grek</text>
+        <line x1="46" y1="276" x2="434" y2="276" class="gl"/>
+        <text x="240.0" y="314" text-anchor="middle" class="axis">Visits handled</text>
+        <text x="12" y="147.0" transform="rotate(-90 12 147.0)" text-anchor="middle" class="axis">Avg satisfaction</text>
+      </svg>
+      <p style="color:var(--ink-2);font-size:13px;margin-top:14px;max-width:44ch">
+        The relationship is negative across all five providers. With only five points this is
+        suggestive rather than conclusive, but it is the clearest operational signal in the data.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Provider comparison</h3>
+    <p class="note">Length of stay covers admitted patients only</p>
+    <table><thead><tr><th>Provider</th><th class="r">Visits</th><th class="r">Revenue</th>
+    <th class="r">Satisfaction</th><th class="r">Avg LOS</th><th class="r">Unpaid</th></tr></thead>
+    <tbody><tr><td>Dr. Sade Kikiola</td><td class="r num">1,875</td><td class="r num">$1.21M</td><td class="r num">2.35</td><td class="r num">4.99</td><td class="r num">34.3%</td></tr><tr><td>Dr. Olu Abisola</td><td class="r num">1,358</td><td class="r num">$942K</td><td class="r num">5.45</td><td class="r num">4.86</td><td class="r num">46.5%</td></tr><tr><td>Dr. Ravi Patel</td><td class="r num">855</td><td class="r num">$571K</td><td class="r num">3.36</td><td class="r num">4.72</td><td class="r num">33.5%</td></tr><tr><td>Dr. Emma Jones</td><td class="r num">467</td><td class="r num">$325K</td><td class="r num">4.85</td><td class="r num">4.70</td><td class="r num">40.0%</td></tr><tr><td>Dr. Johnson Grek</td><td class="r num">445</td><td class="r num">$306K</td><td class="r num">5.05</td><td class="r num">5.10</td><td class="r num">37.8%</td></tr></tbody></table>
+  </div>
+</section>
+
+<section id="trend">
+  <div class="panel" style="margin-bottom:24px">
+    <h3>Monthly revenue and outstanding balance</h3>
+    <p class="note">Circled points mark months affected by the data gaps described under Data quality</p>
+    <svg viewBox="0 0 760 300" role="img" aria-label="Monthly revenue line chart with outstanding balance overlaid">
+      <line x1="58" y1="254.0" x2="744" y2="254.0" class="gl"/><text x="50" y="258.0" text-anchor="end" class="axis">0</text><line x1="58" y1="194.5" x2="744" y2="194.5" class="gl"/><text x="50" y="198.5" text-anchor="end" class="axis">$175K</text><line x1="58" y1="135.0" x2="744" y2="135.0" class="gl"/><text x="50" y="139.0" text-anchor="end" class="axis">$350K</text><line x1="58" y1="75.5" x2="744" y2="75.5" class="gl"/><text x="50" y="79.5" text-anchor="end" class="axis">$525K</text><line x1="58" y1="16.0" x2="744" y2="16.0" class="gl"/><text x="50" y="20.0" text-anchor="end" class="axis">$700K</text>
+      <path d="M 58,254 L 58.0,184.5 L 100.9,189.9 L 143.8,188.0 L 186.6,189.7 L 229.5,190.2 L 272.4,188.8 L 315.2,188.0 L 358.1,186.3 L 401.0,184.8 L 443.9,244.1 L 486.8,254.0 L 529.6,190.0 L 572.5,33.8 L 615.4,185.3 L 658.2,177.0 L 701.1,183.5 L 744.0,219.0 L 744.0,254 Z" fill="var(--teal)" opacity="0.08"/>
+      <polyline points="58.0,184.5 100.9,189.9 143.8,188.0 186.6,189.7 229.5,190.2 272.4,188.8 315.2,188.0 358.1,186.3 401.0,184.8 443.9,244.1 486.8,254.0 529.6,190.0 572.5,33.8 615.4,185.3 658.2,177.0 701.1,183.5 744.0,219.0" fill="none" stroke="var(--teal)" stroke-width="2"/>
+      <polyline points="58.0,220.4 100.9,228.9 143.8,226.2 186.6,223.4 229.5,252.3 272.4,247.3 315.2,231.9 358.1,217.3 401.0,220.1 443.9,249.0 486.8,254.0 529.6,225.4 572.5,166.7 615.4,223.2 658.2,211.6 701.1,238.5 744.0,235.6" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-dasharray="4 3"/>
+      <circle cx="58.0" cy="184.5" r="3" fill="var(--teal)"/><circle cx="100.9" cy="189.9" r="3" fill="var(--teal)"/><circle cx="143.8" cy="188.0" r="3" fill="var(--teal)"/><circle cx="186.6" cy="189.7" r="3" fill="var(--teal)"/><circle cx="229.5" cy="190.2" r="3" fill="var(--teal)"/><circle cx="272.4" cy="188.8" r="3" fill="var(--teal)"/><circle cx="315.2" cy="188.0" r="3" fill="var(--teal)"/><circle cx="358.1" cy="186.3" r="3" fill="var(--teal)"/><circle cx="401.0" cy="184.8" r="3" fill="var(--teal)"/><circle cx="443.9" cy="244.1" r="3" fill="var(--teal)"/><circle cx="486.8" cy="254.0" r="3" fill="var(--teal)"/><circle cx="529.6" cy="190.0" r="3" fill="var(--teal)"/><circle cx="572.5" cy="33.8" r="3" fill="var(--teal)"/><circle cx="615.4" cy="185.3" r="3" fill="var(--teal)"/><circle cx="658.2" cy="177.0" r="3" fill="var(--teal)"/><circle cx="701.1" cy="183.5" r="3" fill="var(--teal)"/><circle cx="744.0" cy="219.0" r="3" fill="var(--teal)"/><circle cx="443.9" cy="244.1" r="7" fill="none" stroke="var(--amber)" stroke-width="1.6"/><circle cx="486.8" cy="254.0" r="7" fill="none" stroke="var(--amber)" stroke-width="1.6"/><circle cx="572.5" cy="33.8" r="7" fill="none" stroke="var(--amber)" stroke-width="1.6"/><text x="58.0" y="272" text-anchor="middle" class="axis">24-01</text><text x="143.8" y="272" text-anchor="middle" class="axis">24-03</text><text x="229.5" y="272" text-anchor="middle" class="axis">24-05</text><text x="315.2" y="272" text-anchor="middle" class="axis">24-07</text><text x="401.0" y="272" text-anchor="middle" class="axis">24-09</text><text x="486.8" y="272" text-anchor="middle" class="axis">24-11</text><text x="572.5" y="272" text-anchor="middle" class="axis">25-01</text><text x="658.2" y="272" text-anchor="middle" class="axis">25-03</text><text x="744.0" y="272" text-anchor="middle" class="axis">25-05</text>
+      <line x1="58" y1="254" x2="744" y2="254" class="gl"/>
+    </svg>
+    <div class="legend">
+      <span><i style="background:var(--teal)"></i>Gross revenue</span>
+      <span><i style="background:var(--amber)"></i>Outstanding (unpaid)</span>
+    </div>
+    <p style="color:var(--ink-2);font-size:13px;margin-top:16px;max-width:78ch">
+      Underlying monthly revenue is remarkably flat at roughly $190K across the period. The three
+      circled months are artefacts rather than business events: October 2024 records only 45 visits,
+      November 2024 is absent entirely, and January 2025 carries 925 visits — close to
+      three months' worth. Treat the shape of this line with caution until the source is corrected.</p>
+  </div>
+
+  <div class="grid g-2e" style="margin-bottom:24px">
+    <div class="panel">
+      <h3>Patient satisfaction distribution</h3>
+      <p class="note">Count of visits by score</p>
+      <svg viewBox="0 0 440 240" role="img" aria-label="Bar chart of satisfaction score distribution">
+        <rect x="45.0" y="14.0" width="32.6" height="192.0" fill="var(--amber)"/><text x="61.3" y="222" text-anchor="middle" class="axis">1</text><rect x="83.6" y="14.4" width="32.6" height="191.6" fill="var(--amber)"/><text x="99.9" y="222" text-anchor="middle" class="axis">2</text><rect x="122.2" y="164.2" width="32.6" height="41.8" fill="var(--teal-2)"/><text x="138.5" y="222" text-anchor="middle" class="axis">3</text><rect x="160.8" y="159.9" width="32.6" height="46.1" fill="var(--teal-2)"/><text x="177.1" y="222" text-anchor="middle" class="axis">4</text><rect x="199.4" y="161.5" width="32.6" height="44.5" fill="var(--teal-2)"/><text x="215.7" y="222" text-anchor="middle" class="axis">5</text><rect x="238.0" y="161.4" width="32.6" height="44.6" fill="var(--teal-2)"/><text x="254.3" y="222" text-anchor="middle" class="axis">6</text><rect x="276.6" y="162.0" width="32.6" height="44.0" fill="var(--teal-2)"/><text x="292.9" y="222" text-anchor="middle" class="axis">7</text><rect x="315.2" y="160.8" width="32.6" height="45.2" fill="var(--teal-2)"/><text x="331.5" y="222" text-anchor="middle" class="axis">8</text><rect x="353.8" y="169.1" width="32.6" height="36.9" fill="var(--teal-2)"/><text x="370.1" y="222" text-anchor="middle" class="axis">9</text><rect x="392.4" y="163.7" width="32.6" height="42.3" fill="var(--teal-2)"/><text x="408.7" y="222" text-anchor="middle" class="axis">10</text>
+        <line x1="42" y1="206" x2="428" y2="206" class="gl"/>
+      </svg>
+      <p style="color:var(--ink-2);font-size:13px;margin-top:14px;max-width:46ch">
+        The distribution is bimodal: 53% of all visits score 1 or 2, while
+        scores 3 through 10 are near-uniform. A genuine satisfaction curve rarely looks like this,
+        which is why the 3.84 average should not be read as a headline metric.</p>
+    </div>
+    <div class="panel">
+      <h3>Where patients come from</h3>
+      <p class="note">Top cities by revenue</p>
+      <table><thead><tr><th>City</th><th class="r">Visits</th><th class="r">Revenue</th></tr></thead>
+      <tbody><tr><td>Edinburgh</td><td class="r num">1,483</td><td class="r num">$1.02M</td></tr><tr><td>Birmingham</td><td class="r num">1,175</td><td class="r num">$822K</td></tr><tr><td>Sheffield</td><td class="r num">600</td><td class="r num">$388K</td></tr><tr><td>Glasgow</td><td class="r num">284</td><td class="r num">$179K</td></tr><tr><td>Leeds</td><td class="r num">276</td><td class="r num">$174K</td></tr><tr><td>Liverpool</td><td class="r num">247</td><td class="r num">$164K</td></tr><tr><td>London</td><td class="r num">238</td><td class="r num">$160K</td></tr><tr><td>Bristol</td><td class="r num">240</td><td class="r num">$155K</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <div class="grid g-2e">
+    <div class="panel">
+      <h3>Diagnosis mix</h3>
+      <p class="note">Visits and revenue by recorded diagnosis</p>
+      <table><thead><tr><th>Diagnosis</th><th class="r">Visits</th><th class="r">Revenue</th></tr></thead>
+      <tbody><tr><td>Hypertension</td><td class="r num">2,013</td><td class="r num">$1.33M</td></tr><tr><td>Appendicitis</td><td class="r num">994</td><td class="r num">$662K</td></tr><tr><td>Asthma</td><td class="r num">918</td><td class="r num">$630K</td></tr><tr><td>Fracture</td><td class="r num">606</td><td class="r num">$411K</td></tr><tr><td>Migraine</td><td class="r num">469</td><td class="r num">$325K</td></tr></tbody></table>
+    </div>
+    <div class="panel">
+      <h3>Procedure mix</h3>
+      <p class="note">Visits and revenue by procedure performed</p>
+      <table><thead><tr><th>Procedure</th><th class="r">Visits</th><th class="r">Revenue</th></tr></thead>
+      <tbody><tr><td>X-Ray</td><td class="r num">1,537</td><td class="r num">$1.05M</td></tr><tr><td>CT Scan</td><td class="r num">1,233</td><td class="r num">$806K</td></tr><tr><td>MRI Scan</td><td class="r num">912</td><td class="r num">$601K</td></tr><tr><td>Ultrasound</td><td class="r num">720</td><td class="r num">$481K</td></tr><tr><td>Blood Test</td><td class="r num">598</td><td class="r num">$415K</td></tr></tbody></table>
+    </div>
+  </div>
+</section>
+
+<section id="dq">
+  <div class="callout">
+    <b>Read this before using the numbers</b>
+    <p>Several fields in the source data are internally inconsistent. The dashboard reports what the
+    data says; this page records where it should not be trusted. Every figure below is reproducible
+    from the source CSVs.</p>
+  </div>
+
+  <div class="panel" style="margin-bottom:24px">
+    <h3>Findings</h3>
+    <p class="note">Ordered by impact on the reported figures</p>
+
+    <div class="finding">
+      <b>Clinical categories are not linked to each other<span class="tag hi">Blocks analysis</span></b>
+      <p>824 outpatient visits carry a room type, and 844 of the
+      1,245 inpatient visits have no admission date. 760 visits with service type
+      "Emergency" are flagged as not being an emergency visit. Service type, room type, admission dates and the
+      emergency flag appear to have been populated independently, so any analysis that combines them —
+      occupancy, true inpatient cost, emergency throughput — cannot be trusted.</p>
+    </div>
+
+    <div class="finding">
+      <b>One month missing, two distorted<span class="tag hi">Distorts trend</span></b>
+      <p>November 2024 contains no visits at all. October 2024 has 45 against a monthly norm of
+      roughly 300, and January 2025 has 925. The most likely explanation is that records were
+      shifted rather than lost, which would make the January spike the missing October and November volume.
+      Until confirmed, month-over-month comparisons across that window are meaningless.</p>
+    </div>
+
+    <div class="finding">
+      <b>Satisfaction scores are bimodal<span class="tag">Interpret with care</span></b>
+      <p>52.6% of visits score 1 or 2, and the remaining scores are almost uniformly
+      distributed from 3 to 10. This is not the shape a real satisfaction survey produces. The mean of
+      3.84 is arithmetically correct but describes a distribution that has no clinical meaning,
+      so provider comparisons on satisfaction are directional at best.</p>
+    </div>
+
+    <div class="finding">
+      <b>Insurance coverage is missing on 119 visits<span class="tag">Minor</span></b>
+      <p>Treated as zero coverage in these calculations, which slightly overstates patient liability.
+      A further 2 visits have coverage exceeding the gross bill; these are clipped at zero
+      rather than allowed to become negative revenue.</p>
+    </div>
+
+    <div class="finding">
+      <b>Room charges depend on a derived length of stay<span class="tag">Method note</span></b>
+      <p>The source provides a daily room rate but no room total. Length of stay is calculated as discharge
+      date minus admission date, and room revenue as rate multiplied by that duration. Visits with no
+      admission date contribute no room revenue. Given the inconsistency noted above, this understates
+      room income if admissions are genuinely missing rather than genuinely absent.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>How the measures are defined</h3>
+    <p class="note">So that figures can be reconciled against the source</p>
+    <table>
+      <thead><tr><th>Measure</th><th>Definition</th></tr></thead>
+      <tbody>
+        <tr><td>Gross revenue</td><td>Treatment cost + medication cost + (daily room rate × length of stay)</td></tr>
+        <tr><td>Length of stay</td><td>Discharge date − admission date, in days; zero where either is missing</td></tr>
+        <tr><td>Insurance covered</td><td>Sum of insurance coverage, nulls treated as zero</td></tr>
+        <tr><td>Patient liability</td><td>Gross revenue − insurance covered, floored at zero</td></tr>
+        <tr><td>Outstanding</td><td>Gross revenue on visits where payment status is Pending</td></tr>
+        <tr><td>Avg satisfaction</td><td>Mean of patient satisfaction score across all visits</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  Built from the healthcare provider dataset: 5,000 visits across 4,973 patients, 5 providers,
+  5 departments and 40 cities. Figures reproduce from the source CSVs using the definitions above.
+</footer>
+</div>
+
+<script>
+const tabs = document.querySelectorAll('nav button');
+const panes = document.querySelectorAll('section');
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(x => x.setAttribute('aria-selected', String(x === t)));
+  panes.forEach(p => p.classList.toggle('on', p.id === t.dataset.p));
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}));
+</script>
+</body>
+</html>
 
