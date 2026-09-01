@@ -47,7 +47,7 @@ Four pages, built as a single self-contained HTML file with no dependencies beyo
 
 The source is already a star schema: `visits` as the fact table at one row per visit, joined to seven dimensions.
 
-![Data model](docs/images/data-model.png)
+![Data model](docs/images/health.png)
 
 No revenue column exists in the source. The financial measures are derived:
 
