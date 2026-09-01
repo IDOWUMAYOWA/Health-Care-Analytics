@@ -4,7 +4,7 @@ Financial and provider performance analysis of a healthcare centre, delivered as
 
 ![Financial overview](docs/images/dashboard-financial.png)
 
-**[View the live dashboard →](https://idowumayowa.github.io/healthcare-analytics/)**
+**[View the live dashboard →](https://idowumayowa.github.io/Health-Care-Analytics/)**
 
 ## Purpose
 The brief asked for an analysis of a healthcare centre's financial performance and its providers, presented as a 3–4 page interactive dashboard.
